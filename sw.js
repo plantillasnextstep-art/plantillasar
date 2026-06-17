@@ -1,12 +1,14 @@
 // PlantillaAR Service Worker
 // Cambiar este número cada vez que se sube una nueva versión:
-const CACHE_VERSION = 'plantillaar-v1';
+const CACHE_VERSION = 'plantillaar-v3';
 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
   'https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap'
 ];
 
