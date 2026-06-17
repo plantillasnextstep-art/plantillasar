@@ -1100,7 +1100,27 @@ async function extractPdfText(arrayBuffer) {
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    const pageText = content.items.map(it => it.str).join(' ');
+    // PDF.js devuelve los items en el orden del stream interno del PDF, que NO
+    // siempre coincide con el orden visual de lectura. Para que los patrones de
+    // texto funcionen igual que en las pruebas, ordenamos cada item por su
+    // posición real en la página: primero por fila (Y, de arriba a abajo),
+    // y dentro de la misma fila por columna (X, de izquierda a derecha).
+    const items = content.items.map(it => ({
+      str: it.str,
+      x: it.transform[4],
+      y: it.transform[5]
+    }));
+    // Agrupar en "filas" cuando la diferencia de Y es chica (misma línea visual)
+    const rowThreshold = 3;
+    items.sort((a, b) => b.y - a.y); // de arriba a abajo (Y de PDF crece hacia arriba)
+    const rows = [];
+    items.forEach(item => {
+      let row = rows.find(r => Math.abs(r.y - item.y) < rowThreshold);
+      if (!row) { row = { y: item.y, items: [] }; rows.push(row); }
+      row.items.push(item);
+    });
+    rows.forEach(row => row.items.sort((a, b) => a.x - b.x));
+    const pageText = rows.map(row => row.items.map(it => it.str).join(' ')).join(' \n ');
     fullText += pageText + '\n';
   }
   return fullText;

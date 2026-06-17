@@ -1,6 +1,6 @@
 // PlantillaAR Service Worker
 // Cambiar este número cada vez que se sube una nueva versión:
-const CACHE_VERSION = 'plantillaar-v3';
+const CACHE_VERSION = 'plantillaar-v4';
 
 const ASSETS_TO_CACHE = [
   './',
